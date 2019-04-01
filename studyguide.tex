@@ -1,0 +1,66 @@
+\documentclass[12pt, a4paper, oneside, titlepage]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{subfiles}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[headsep=0mm]{geometry}
+\usepackage{enumitem}
+
+\setlength{\parindent}{0pt}
+\setlength{\headsep}{0pt}
+\setlength{\parskip}{0pt}
+\setlength{\intextsep}{12pt}
+\setlist{nolistsep}
+\setitemize{itemsep=0pt}
+\geometry{
+	a4paper,
+	total={170mm,257mm},
+	left=20mm,
+	top=10mm,
+}
+\graphicspath{{images/}{../images/}}
+
+\begin{document}
+		\begin{titlepage}
+		\pagenumbering{gobble}
+		\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for the horizontal lines, change thickness here
+		
+		\center % Center everything on the page
+		
+		%----------------------------------------------------------------------------------------
+		%	HEADING SECTIONS
+		%----------------------------------------------------------------------------------------
+		
+		\textsc{\LARGE University of Birmingham}\\[1.5cm] % Name of your university/college
+		%\includegraphics[scale=1.25]{logo.png}\\[1cm]
+		\textsc{\Large Computer Science Year 2}\\[0.5cm] % Major heading such as course name
+		\textsc{\Large Faisal IMH Alrajhi}\\[0.5cm]
+		
+		%----------------------------------------------------------------------------------------
+		%	TITLE SECTION
+		%----------------------------------------------------------------------------------------
+		
+		\HRule \\[0.4cm]
+		{ \huge \bfseries Year 2 Study Guide}\\[0.4cm] % Title of your document
+		\HRule \\[1.5cm]
+		
+		
+	%	\includegraphics[scale=0.4]{title.png}\\[1cm] % Include a department/university logo - this will require the graphicx package
+		
+		%----------------------------------------------------------------------------------------
+		
+		\vfill % Fill the rest of the page with whitespace
+		
+	\end{titlepage}
+
+\newpage
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+
+\chapter{Graphics}
+\subfile{modules/graphics}
+\end{document}

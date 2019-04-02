@@ -1,7 +1,8 @@
 \section{Surface Geometry}
 This section covers the basics introduced in how to represent shapes in a computer.
-\subsection{Definitions}
+\subsection{Notes}
 \begin{itemize}
+	\item Graphics Pipeline: It refers to the sequence of steps used to create a 2D raster representation of a 3D scene. It is the process of turning a 3D model into what the computer displays. 
 	\item Vertex: A point with three numbers representing its XYZ position in a plane
 	\item Edge: An edge is the difference between two vertices; the segment connecting them
 	\item Surface: A closed set of edges representing a face of a 3D object
@@ -101,15 +102,71 @@ One can also use implicit or parametric equations to generate shapes. Below is a
 
 \subsection{Examples}
    \begin{figure}[!htb]
-	\center{\includegraphics[width=15cm]
+	\center{\includegraphics[width=12cm]
 		{graphics/polygonTable}}
 	\caption{\label{fig:pyramidPolygons} Example from Lecture}
 	\end{figure}
+\newpage
 Further Examples are taken from quizzes and assignments
+   \begin{figure}[!htb]
+	\center{\includegraphics[width=14cm]
+		{graphics/quizq1}}
+	\caption{\label{fig:pyramidPolygons} Example from Quiz}
+\end{figure}
+
+Surfaces:
+
+S1 = V1, V2, V3, V4, V5, V6
+
+S2 = V1, V7, V2
+
+S3 = V2, V7, V3
+
+S4 = V2, V7, V3
+
+S5 = V4, V7, V5
+
+S6 = V5, V7, V6
+
+S7 = V6, V7, V1
+\subsection{Normal Vectors}
+The normal vector of a surface points outwards from the surface. This is later used for lighting, projection and culling. Calculating normal vectors is a fairly simple task. For boundary polygons, the normal of a face is the cross product of two edges.
+Assuming vectors A and B, the cross product is the determinant of the following matrix;
+
+\begin{equation}
+\label{eqn:crossprodMat}
+\begin{bmatrix}
+i & j & k\\ 
+A_x & A_y & A_z\\ 
+B_x & B_y & B_z
+\end{bmatrix}
+\end{equation}
+
+Which can be minimized to the following (longer) equation;
+
+\begin{equation}
+\label{eqn:crossprodLine}
+N = \begin{bmatrix}
+A_yB_z - A_zB_y\\ 
+A_zB_x - A_xB_z\\ 
+A_xB_y - A_yB_x
+\end{bmatrix}
+\end{equation}
+
+To know which vectors to use for A and B, simply select an edge on a surface, and you use your right hand with your thumb pointing outwards and curl your hand around in the direction until the first vector hits your hand. Alternatively, you can piece it together by looking at the figure.
+  \begin{figure}[!htb]
+	\center{\includegraphics[width=10cm]
+		{graphics/normal}}
+	\caption{\label{fig:csg} Normal Vector of cube from lecture}
+\end{figure}
+
 \subsection{Further Sources}
 	\href{https://www.tutorialspoint.com/computer_graphics/computer_graphics_surfaces.htm}{Surface Representations}
+	\newline
+	\href{https://www.cs.cmu.edu/afs/cs/academic/class/15462-s09/www/lec/04/lec04.pdf}{Alternate Lecture}
 \newpage
 \section{Transforms}
+
 \newpage
 \section{Lighting}
 \newpage

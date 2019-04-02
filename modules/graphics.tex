@@ -297,9 +297,9 @@ This section covers things related to lighting and shading of objects in a scene
 \begin{itemize}
 	\item	Flat shading is the simplest shading model. Each rendered polygon has a single normal vector; shading for the entire polygon is constant across the surface of the polygon. With a small polygon count, this gives curved surfaces a faceted look.
 	
-	\item	Phong shading is the most sophisticated of the three methods you list. Each rendered polygon has one normal vector per vertex; shading is performed by interpolating the vectors across the surface and computing the color for each point of interest. Interpolating the normal vectors gives a reasonable approximation to a smoothly-curved surface while using a limited number of polygons.
+	\item	Phong shading is the most sophisticated of the three. Each rendered polygon has one normal vector per vertex; shading is performed by interpolating the vectors across the surface and computing the color for each point of interest.
 	
-	\item	Gourard shading is in between the two: like Phong shading, each polygon has one normal vector per vertex, but instead of interpolating the vectors, the color of each vertex is computed and then interpolated across the surface of the polygon.
+	\item	Gouraud shading is in between the two: like Phong shading, each polygon has one normal vector per vertex, but instead of interpolating the vectors, the color of each vertex is computed and then interpolated across the surface of the polygon.
 \end{itemize}
   \begin{figure}[!htb]
 	\center{\includegraphics[width=10cm]
@@ -314,6 +314,41 @@ Colour = Ambient + Diffuse + Specular \\
 Colour = I_aK_a + I_dK_d\cos{\theta_L} + I_sK_s\cos^n{\theta_S} 
 \end{split}
 \end{equation}
+
+\textbf{Ambient Term}
+This is very easy. It is the $K_{a}$ term multiplied with the Ambient intensity $I_{a}$.
+\begin{equation}
+\label{eqn:phongAmbient}
+Ambient = I_aK_a
+\end{equation}
+
+\textbf{Diffuse Term}
+The diffuse term is usually straight forward.. It is the $K_{d}$ term multiplied with the Light source intensity $I_{d}$. The angle $\theta$ between the light source and the normal of the surface is then computed, and the $cos(\theta)$ is multiplied to obtain the full term.
+\begin{equation}
+\label{eqn:phongDiffuse}
+Diffuse =  I_dK_d\cos{\theta_L}
+\end{equation}
+
+\begin{figure}[!htb]
+\center{\includegraphics[width=5cm]
+	{graphics/diffuse}}
+\caption{\label{fig:diffuse} Diffuse term overview}
+\end{figure}
+
+\textbf{Specular Term}
+The specular term needs a few more steps. It is the $K_{s}$ term multiplied with the reflected Light source intensity $I_{s}$. This is the ray that is bounced off of the surface, and is $\theta_L$ away from the normal of the surface. This intensity is multiplied by the $\cos$ of the angle $\theta_S$, the angle between the reflected ray and the line of sight from the camera. The $\cos$ is raised to the $n_{th}$ power, a factor known as a shininess factor that is usually given.
+
+\begin{equation}
+\label{eqn:phongSpecular}
+Diffuse =  I_dK_d\cos^n{\theta_S}
+\end{equation}
+\begin{figure}[!htb]
+	\center{\includegraphics[width=5cm]
+		{graphics/specular}}
+	\caption{\label{fig:specular} Specular term overview}
+\end{figure}
+
+\subsection{Examples}
 
 \newpage
 \section{Projection}

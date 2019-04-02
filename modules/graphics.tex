@@ -157,7 +157,7 @@ To know which vectors to use for A and B, simply select an edge on a surface, an
   \begin{figure}[!htb]
 	\center{\includegraphics[width=10cm]
 		{graphics/normal}}
-	\caption{\label{fig:csg} Normal Vector of cube from lecture}
+	\caption{\label{fig:normalCube} Normal Vector of cube from lecture}
 \end{figure}
 
 \subsection{Further Sources}
@@ -166,9 +166,155 @@ To know which vectors to use for A and B, simply select an edge on a surface, an
 	\href{https://www.cs.cmu.edu/afs/cs/academic/class/15462-s09/www/lec/04/lec04.pdf}{Alternate Lecture}
 \newpage
 \section{Transforms}
+This section covers simple transformation matrices.
+\subsection{Notes}
+\begin{itemize}
+	\item Transformation: a function that can be applied to each of the points in a geometric object to produce a new object.
+	\item Translation: A geometric transform that adds a given translation amount to each coordinate of a point. Translation is used to move objects without changing their size or orientation.
+	\item Rotation: A geometric transform that rotates each point by a specified angle about some point (in 2D) or axis (in 3D).
+	\item Scaling: A geometric transform that multiplies each coordinate of a point by a number called the scaling factor. Scaling increases or decreases the size of an object, but also moves its points closer to or farther from the origin.
+\end{itemize}
+Transformations are applied to geometric objects to move them around. This is valuable when considering camera positions, or when laying out a world in a video game.
+Transformations can be applied as equations for each dimensions eg. \[T_x = x + t_x\] is the new x-position when applying the translation. However, there is a lack of uniformity between different transforms, some requiring x and y more than once, others being matrices. To standardize transforms, we instead use \textit{Homogeneous Transformation Matrices}. Convert a 2D point to a 3D point by setting z = 1, and apply the transforms as matrices by replacing the variable found in each matrix template. This is an easy way of standardizing the equations, and allows for easy transforms by multiplying the transformations together before multiplying them with the point.
+
+For example, applying a Translation {T} and then a Rotation {R} can be done by multiplying {RT} first and then multiplying the new transform matrix with the original points. This also makes it more efficient to move more than one point when they share the same transform, as it only need one multiplication per-point rather than one per-transform per-point.
+\subsection{Transformation Matrices}
+
+\begin{equation}
+\label{eqn:crossprodLine}
+T_{2D} = \begin{bmatrix}
+1 & 0 & T_x\\ 
+0 & 1 & T_y\\ 
+0 & 0 & 1\\ 
+\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+\label{eqn:crossprodLine}
+S_{2D} = \begin{bmatrix}
+S_x & 0 & 0\\ 
+0 & S_y & 0\\ 
+0 & 0 & 1\\ 
+\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+\label{eqn:crossprodLine}
+R_{2D} = \begin{bmatrix}
+\cos{\theta} & -\sin{\theta} & T_x\\ 
+\sin{\theta} & \cos{\theta} & T_y\\ 
+0 & 0 & 1\\ 
+\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+\label{eqn:crossprodLine}
+T_{3D} =\begin{bmatrix}
+1 & 0 & 0 & T_x\\ 
+0 & 1 & 0 & T_y\\ 
+0 & 0 & 1 & T_z\\
+0 & 0 & 0 & 1 
+\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+\label{eqn:crossprodLine}
+S_{3D} = \begin{bmatrix}
+S_x & 0 & 0 & 0\\ 
+0 & S_y & 0 & 0\\ 
+0 & 0 & S_z & 0\\
+0 & 0 & 0 & 1 
+\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+\label{eqn:crossprodLine}
+R_{3D_X} = \begin{bmatrix}
+1 & 0 & 0 & 0\\ 
+0 & \cos{\theta} & -\sin{\theta} & 0\\ 
+0 & \sin{\theta} & \cos{\theta} & 0\\
+0 & 0 & 0 & 1 
+\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+\label{eqn:crossprodLine}
+R_{3D_Y} = \begin{bmatrix}
+\cos{\theta} & 0 & \sin{\theta} & 0\\ 
+0 & 1 & 0 & 0\\ 
+-\sin{\theta} & 0 & \cos{\theta} & 0\\
+0 & 0 & 0 & 1 
+\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+\label{eqn:crossprodLine}
+R_{3D_Z} = \begin{bmatrix}
+\cos{\theta} & -\sin{\theta} & 0 & 0\\ 
+\sin{\theta} & \cos{\theta} & 0 & 0\\ 
+0 & 0 & 1 & 0\\
+0 & 0 & 0 & 1
+\end{bmatrix}
+\end{equation}
+\subsection{Examples}
+
+\subsection{References}
+\href{http://math.hws.edu/graphicsbook/c2/s3.html}{Quick Overview}
 
 \newpage
 \section{Lighting}
+This section covers things related to lighting and shading of objects in a scene.
+\subsection{Notes}
+\begin{itemize}
+	\item Diffuse: Non-shiny illumination
+	\item Specular: Shiny reflections
+	\item Ambient: background illumination
+\end{itemize}
+\textbf{Ambient Light}
+\begin{itemize}
+	\item Global background light
+	\item No direction
+	\item Does not depend on anything
+\end{itemize}
+\textbf{Diffuse Light}
+\begin{itemize}
+	\item Parallel Light Rays originating from a source direction
+	\item Contributes to Diffuse and Specular Term
+\end{itemize}
+\textbf{Spot Light}
+\begin{itemize}
+	\item Originates from a single source point
+	\item Conic dispersion of light, intensity is a function of distance
+	\item More realistic
+\end{itemize}
+\textbf{Surface Properties}
+\begin{itemize}
+	\item Geometry - Position, orientation
+	\item Colour - reflectance and Absorption spectrum
+	\item Micro-structure - defines reflectance properties
+\end{itemize}
+\textbf{Shading Models}
+\begin{itemize}
+	\item	Flat shading is the simplest shading model. Each rendered polygon has a single normal vector; shading for the entire polygon is constant across the surface of the polygon. With a small polygon count, this gives curved surfaces a faceted look.
+	
+	\item	Phong shading is the most sophisticated of the three methods you list. Each rendered polygon has one normal vector per vertex; shading is performed by interpolating the vectors across the surface and computing the color for each point of interest. Interpolating the normal vectors gives a reasonable approximation to a smoothly-curved surface while using a limited number of polygons.
+	
+	\item	Gourard shading is in between the two: like Phong shading, each polygon has one normal vector per vertex, but instead of interpolating the vectors, the color of each vertex is computed and then interpolated across the surface of the polygon.
+\end{itemize}
+  \begin{figure}[!htb]
+	\center{\includegraphics[width=10cm]
+		{graphics/shadingModels}}
+	\caption{\label{fig:normalCube} Shading Model Differences}
+\end{figure}
+\subsection{Phong Shading Equation}
+\begin{equation}
+\label{eqn:phongEqn}
+\begin{split}
+Colour = Ambient + Diffuse + Specular \\
+Colour = I_aK_a + I_dK_d\cos{\theta_L} + I_sK_s\cos^n{\theta_S} 
+\end{split}
+\end{equation}
+
 \newpage
 \section{Projection}
 \newpage

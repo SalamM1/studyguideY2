@@ -568,7 +568,7 @@ The centre of project can be placed at either the centre/origin of the viewing c
 \begin{figure}[!htb]
 	\center{\includegraphics[width=9cm]
 		{graphics/trianglesZ0}}
-	\caption{\label{fig:trianglesZ0} Projection Lines meet at the COP}
+	\caption{\label{fig:trianglesZ0} COP = 0}
 \end{figure}
 \begin{equation}
 \label{eqn:proj0}
@@ -655,11 +655,57 @@ Define the viewing (camera) coordinate system by computing its axes, i.e., direc
 	
 	$V_4 = [-1.33, 2.27, 40]$
 \end{enumerate}
-\section{References}
+\subsection{References}
 No external references were needed on this section.
 \newpage
 \section{Misc. Definitions}
 This section covers general algorithms and definitions from Rendering to Texture Mapping. Since the exam will focus more on the previous parts for the more technical questions, this part will mostly be structured as a set of definitions.
+
+\subsection{Rasterisation}
+\begin{itemize}
+	\item Rasterisation: Converting an object from vector world coordinates to a raster image to display
+	\item Digital Differential Analyzer (DDA): Rasterisation algorithm, interpolates values in an interval by computing separate equations for $(x,y)$. Is expensive and inefficient.
+	\item Bresenham Algorithm: Incremental, integer only algorithm. Has many implementations.
+	\item Antialiasing: utilizes blending techniques to blur the edges of the lines and provide the viewer with the illusion of a smoother line. 
+\end{itemize}
+Circles can be plotted either directly with a circle equation, directly with polar coordinates, or using Bresenhams by looping across a set of values until all values on a circle are plotted. Bresenham and Polar methods abuse the symmetry of a circle's points.
+\begin{figure}[!htb]
+	\center{\includegraphics[width=6cm]
+		{graphics/circle}}
+	\caption{\label{fig:circleRaster} Symmetry of circle}
+\end{figure}
+\subsection{Texture Mapping}
+Texture mapping can be defined as using an image and pasting the image onto a geometric model. There are three types of Texture Mapping.
+\begin{enumerate}
+	\item Texture Image: uses iamges to fill inside polygons; inverse mapping using an intermediate surface
+	\item Environment/Reflection: uses a picture of the scene for texture maps
+	\item Bump: Emulates altering normal vectors during render process
+\end{enumerate}
+\begin{figure}[!htb]
+	\center{\includegraphics[width=5cm]
+		{graphics/imageMapping}}
+	\caption{\label{fig:imageMap} Image Mapping flow}
+\end{figure}
+
+When it comes to image mapping, there are two main methods.
+\begin{enumerate}
+	\item Forward: copy pixel at source $(u,v)$ to image destination $(r, c)$. Its easy to compute but leaves holes.
+	\item Backward: for image pixels $(r,c)$, grab texture pixel $(u,v)$. Harder to compute but looks better.
+\end{enumerate}
+Environment mapping uses the direction of te reflected ray to index a texture map rather than using the ray projected to its surface. This approach isn't completely accurate as it assumes all reflected rays begin from the same point and that all objects in a scene are the same distance from that point.
+
+Bump mapping is a method used to make a surface look rough. There are two variants.
+\begin{enumerate}
+	\item Displacement Mapping: Height filed is used to perturb surface point along the direction of its surface normal. Inconvenient to implement since map must perturb geometry of model.
+	\item Bump Mapping: A perturbation is applied to the surface normal according to the corresponding value in the map. Convenient to implement as it automatically changes the shading parameters of a surface.
+\end{enumerate}
+
+There is also mip-mapping. Mapping can cause aliasing to occur; mip-mapping is an anti-aliasing technique that stores texture as a pyramid of progressive resolution images, filtered down from the original. The further away a point is to be rendered, the lower lower resolution MIP-map is used.
+\begin{figure}[!htb]
+	\center{\includegraphics[width=7cm]
+		{graphics/mipmap}}
+	\caption{\label{fig:imageMap} MIP-map examples}
+\end{figure}
 \newpage
 \section{Past Exam Practice}
 \subsection{2016}

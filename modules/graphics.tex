@@ -492,7 +492,26 @@ end
 
 \newpage
 \section{Projection}
+This section deals with the virtual camera and how objects are projected from a proposed 'world' to a camera space.
+\subsection{Notes}
+\begin{itemize}
+	\item View Reference Point (VRP): The centre point/position where the eyes/camera is positioned
+	\item Viewing Plane: The 2D plane in which images are rendered onto in relation to the camera
+	\item Gaze Vector (N): The direction vector from the VRP facing towards the viewing plane
+	\item Up Vector (U): The vector perpendicular to the normal facing upwards in relation to the Gaze Vector
+	\item Handedness Vector (V): The vector perpendicular to the Gaze and Up Vectors facing right in relation to the gaze vector.
+	\item Camera Coordinate System: The coordinate system formed by the N, U and V vectors acting as axes
+\end{itemize}
+Converting from WCS to CCS
+
+\begin{itemize}
+	\item Perspective Projection:
+	\item Orthographic Projection:
+\end{itemize}
+Triangles are Magic, you do perspective projection with them. We didn't cover the details behind the other stuff.
 \newpage
-\section{Texture Mapping}
+\section{Misc. Definitions}
 \newpage
 \section{Past Exam Practice}
+\subsection{2016}
+\subsection{2017}

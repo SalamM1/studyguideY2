@@ -257,7 +257,61 @@ R_{3D_Z} = \begin{bmatrix}
 \end{bmatrix}
 \end{equation}
 \subsection{Examples}
+\textbf{MATLAB Assignment}
+\textbf{Rotating}
+\begin{figure}[!hbt]
+	\begin{lstlisting}
+	2. Apply rotation transformation to bowl object mesh model
+	%%% Define matrices for rotation of the bowl object around x, y and z axes by 20, 80 and 55 degrees respectively. 
+	%%% Apply these three transformations to the original (non-transformed) bowl object in the given order 
+	%%% and visualize the result using trisurf function. 
+	%%% Save the result of your visualization to "2.png" file and include this file in your submission.
+	rx = [1 0 0 0; 0 cosd(20) -sind(20) 0; 0 sind(20) cosd(20) 0; 0 0 0 1];
+	ry = [cosd(80) 0 sind(80) 0; 0 1 0 0; -sind(80) 0 cosd(80) 0; 0 0 0 1];
+	rz = [cosd(55) -sind(55) 0 0; sind(55) cosd(55) 0 0; 0 0 1 0; 0 0 0 1];
+	rotated_object_vertices = rz*ry*rx*obj_v4;
+	\end{lstlisting}	
+\end{figure}
 
+\textbf{Scaling}
+\begin{figure}[!hbt]
+	\begin{lstlisting}
+%% 3. Apply scaling transformation to bowl object mesh model
+%%% Define a matrix for scaling of bowl object with scaling factor f = [3.5, 1.5, 2] in direction of x, y and
+%%% z axes. Apply this matrix to your original bowl object (non-transformed) and visualize the result
+%%% using trisurf function. Save the result of your visualization to "3.png"? file and include this file in your
+%%% submission.
+
+scaling = [3.5 0 0 0; 0 1.5 0 0; 0 0 2 0; 0 0 0 1];
+scaled_object_vertices = scaling*obj_v4;
+	\end{lstlisting}	
+\end{figure}
+\newpage
+\textbf{Translating}
+\begin{figure}[!hbt]
+	\begin{lstlisting}
+%% 4. Apply translation transformation to bowl object mesh model
+%%% Define a matrix for translation of bowl object by [-500, 50, -100] in direction of x, y and z axes. Apply
+%%% this matrix to your original bowl object and visualize the result using trisurf function. Save the result
+%%% of your visualization to "4.png"? file and include this file in your submission.
+
+translate = [1 0 0 -500; 0 1 0 50; 0 0 1 -100; 0 0 0 1];
+translated_object_vertices = translate*obj_v4;
+	\end{lstlisting}	
+\end{figure}
+
+\textbf{3-in-1 Wombo Combo}
+\begin{figure}[!hbt]
+	\begin{lstlisting}
+%% 5. Apply all 3 transformations defined above to your original (non-transformed) bowl object one after the other in the given order.
+%%% Display transformed meshes in the figure using trisurf.
+%%% Save the result of your visualisation to "5.png" file and include this file to you submission folder. 
+
+%% Compute transformations (4x4 transformation matrices)
+
+object_transformation = translate*scaling*rz*ry*rx;
+	\end{lstlisting}	
+\end{figure}
 \subsection{References}
 \href{http://math.hws.edu/graphicsbook/c2/s3.html}{Quick Overview}
 
@@ -347,8 +401,94 @@ Diffuse =  I_dK_d\cos^n{\theta_S}
 		{graphics/specular}}
 	\caption{\label{fig:specular} Specular term overview}
 \end{figure}
+\newpage
 
 \subsection{Examples}
+\subsubsection{MATLAB Assignment}
+\textbf{Calculating Ambient Term}
+\begin{figure}[!hbt]
+\begin{lstlisting}
+function colour = calcAmbient_skeleton(pixel_colour_current, Ia,Ka)
+
+% Colour at current pixel
+colour = pixel_colour_current;
+
+% TO DO: Compute colour of the pixel here and write values to the
+% corresponding place in image ImA 
+
+ambient = Ia.* Ka;
+for i = 1:size(colour, 3)
+colour(:,:,i) = ambient(i,i,:);
+end
+end
+\end{lstlisting}	
+\end{figure}
+
+\textbf{Calculating Diffuse Term}
+\begin{figure}[!hbt]
+	\begin{lstlisting}
+function colour = calcDiffuse_skeleton(pixel_colour_current, point_position, light_position, surface_normal, Id, Kd)
+
+% Colour at current pixel
+colour = pixel_colour_current;
+
+%TO DO: Calculate light direction from light position and point position
+light_direction = light_position - point_position;
+%TO DO: Calculate normalised light direction
+normalised_light = light_direction / norm(light_direction);
+%TO DO: Calculate cos light direction, removing negative
+%values
+cos_light = dot(surface_normal, normalised_light);
+
+%TO DO: Compute colour colour of the pixel here and write
+% values to the corresponding place in image ImD
+diffuse = Id.*(Kd.*cos_light);
+for i = 1:size(colour, 3)
+colour(:,:,i) = colour(:,:,i) + diffuse(i);
+end
+end
+	\end{lstlisting}	
+\end{figure}
+
+\newpage
+
+\textbf{Calculating Specular Term}
+\begin{figure}[!hbt]
+	\begin{lstlisting}
+function colour = calcSpecular_skeleton(pixel_colour_current, point_position, light_position, surface_normal,normal_towardsViewer, shininess_factor, Is, Ks)
+
+% Colour at current pixel
+colour = pixel_colour_current;
+
+%TO DO: Calculate light direction from light position and point position
+light_direction = point_position - light_position;
+
+%TO DO: Normalised light direction
+normalised_light = light_direction / norm(light_direction);
+%TO DO: Normal component
+n = surface_normal / norm(surface_normal);
+%TO DO: Reflected Ray (tangent + ray in one step) 
+R = n*2*dot(n, -1*normalised_light) + normalised_light;
+%TO DO: Normalised Reflected Ray
+normalised_reflection = R / norm(R);
+%TO DO: Calculate cos_spec, removing negative values
+cos_light = dot(normal_towardsViewer, normalised_reflection);
+if (cos_light < 0)
+cos_light = 0;
+end
+%TO DO:  compute colour colour of the pixel here and write
+% values to the corresponding place in image ImS
+specular = Is.*(Ks.*(cos_light^shininess_factor));
+for i = 1:size(colour, 3)
+colour(:,:,i) = colour(:,:,i) + specular(i);
+end
+
+end
+	\end{lstlisting}	
+\end{figure}
+
+\subsection{References}
+\href{http://learnwebgl.brown37.net/09_lights/lights_specular.html}{WebGL Specular Term}
 
 \newpage
 \section{Projection}

@@ -502,15 +502,164 @@ This section deals with the virtual camera and how objects are projected from a 
 	\item Handedness Vector (V): The vector perpendicular to the Gaze and Up Vectors facing right in relation to the gaze vector.
 	\item Camera Coordinate System: The coordinate system formed by the N, U and V vectors acting as axes
 \end{itemize}
-Converting from WCS to CCS
+  \begin{figure}[!htb]
+	\center{\includegraphics[width=12cm]
+		{graphics/cameraDefs}}
+	\caption{\label{fig:camDefs} Visualised definitions}
+\end{figure}
+When rendering to camera, you first need to have a World Coordinate System and objects in that world. From there, you should know VRP and the Viewing Plane. (TP is the position on the Viewing Plane the camera points to.) Using this information, we can calculate the Camera Coordinate System (N V U).
+\begin{figure}[!htb]
+	\centering
+	U$_{temp}$ = [0 1 0]
+		
+	N = TP - VRP
+	
+	V = U$_{temp}$ x N
+	
+	U = N x V
+\end{figure}
+
+We use transformation matrices to move objects form the World Coordinate System to the Camera Coordinate System. Translate to the camera position, rotate to orient with the camera, then scale the x-axis $-1$ to convert to the left-hand coordinate system to avoid mirroring.
+
+\begin{equation}
+\label{eqn:tanslateCam}
+T_{cam} =\begin{bmatrix}
+1 & 0 & 0 & -x_{vrp}\\ 
+0 & 1 & 0 & -y_{vrp}\\ 
+0 & 0 & 1 & -z_{vrp}\\
+0 & 0 & 0 & 1 
+\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+\label{eqn:rotateCam}
+R_{cam} =\begin{bmatrix}
+\frac{V_x}{\left | \mathbf{V} \right |} & \frac{V_y}{\left | \mathbf{V} \right |} & \frac{V_z}{\left | \mathbf{V} \right |} & 0\\ 
+\frac{U_x}{\left | \mathbf{U} \right |} & \frac{U_y}{\left | \mathbf{U} \right |} & \frac{U_z}{\left | \mathbf{U} \right |} & 0\\ 
+\frac{N_x}{\left | \mathbf{N} \right |} & \frac{N_y}{\left | \mathbf{N} \right |} & \frac{N_z}{\left | \mathbf{N} \right |} & 0\\ 
+0 & 0 & 0 & 1 
+\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+\label{eqn:scaleCam}
+S_{cam} = \begin{bmatrix}
+-1 & 0 & 0 & 0\\ 
+0 & 1 & 0 & 0\\ 
+0 & 0 & 1 & 0\\
+0 & 0 & 0 & 1 
+\end{bmatrix}
+\end{equation}
+
 
 \begin{itemize}
-	\item Perspective Projection:
-	\item Orthographic Projection:
+	\item Centre of Project (COP): The view point the perspective is drawn from, usually the camera position
+	\item Perspective Projection: Objects further away from the COP are scaled smaller
+	\item Orthographic Projection: All objects are on the same scale, regardless of COP
 \end{itemize}
-Triangles are Magic, you do perspective projection with them. We didn't cover the details behind the other stuff.
+\begin{figure}[!htb]
+\center{\includegraphics[width=12cm]
+	{graphics/cop}}
+\caption{\label{fig:cop} Projection Lines meet at the COP}
+\end{figure}
+The centre of project can be placed at either the centre/origin of the viewing coordinate system with the viewing plane on the positive z size, or the negative z side with the viewing plane placed on the centre/origin of the viewing coordinate system. Depending on which method is chosen, the computation differs slightly.
+
+\subsubsection{COP at Z=0}
+\begin{figure}[!htb]
+	\center{\includegraphics[width=9cm]
+		{graphics/trianglesZ0}}
+	\caption{\label{fig:trianglesZ0} Projection Lines meet at the COP}
+\end{figure}
+\begin{equation}
+\label{eqn:proj0}
+P_{per} = \begin{bmatrix}
+1 & 0 & 0 & 0\\ 
+0 & 1 & 0 & 0\\ 
+0 & 0 & 1 & 0\\
+0 & 0 & 1/\mathbf{D} & 0 
+\end{bmatrix}
+\end{equation}
+Where \textbf{D} is the distance from the COP and the viewing plane. The generated matrix after multiplication is not homogenous; to convert it to homogenous form we simply divide all terms by the 4th term, which equates to \[z/D\]
+
+With the perspective project matrix, we can create a general form for moving the object from the World Space to the Camera Space.
+\begin{equation}
+\label{eqn:worldToCam1}
+C = P_{per} * S_{cam} * R_{cam} * T_{cam}
+\end{equation}
+With the new vector converted to homogenous coordinates after applying $C$.
+All new coordinates should also have their Z coordinate equal to te Z coordinate of the viewing plane.
+
+\textbf{COP at Z<0}
+When the viewing plane is at the origin, $P_{per}$ changes slightly.
+\begin{equation}
+\label{eqn:proj1}
+P_{per} = \begin{bmatrix}
+1 & 0 & 0 & 0\\ 
+0 & 1 & 0 & 0\\ 
+0 & 0 & 1 & 0\\
+0 & 0 & 1/\mathbf{D} & 1 
+\end{bmatrix}
+\end{equation}
+Converting to homogenous would also be slightly different, but will still be fairly simple.
+All Z coordinates should end up at Z=0.
+
+\section{Examples}
+
+The questions here are from the quiz.
+
+Consider the following vertex coordinates:
+\begin{figure}[!hbt]
+	\centering
+	V1 = [0, 10, 0]
+	
+	V2 = [5, 0, 5]
+	
+	V3 = [15, 5, 0]
+	
+	V4 = [5, 10, 15]
+\end{figure}
+
+Define the viewing (camera) coordinate system by computing its axes, i.e., direction of gaze N, handedness vector V, and vector U which is the correct up-vector. Camera view reference point is VRP = [60, 30, 100], and the target point TP is at the origin ([0, 0, 0]). The camera coordinate system should be defined in the same way as it is shown in the lecture slides: using temporary up vector of [0,1,0] to compute handedness and up vectors of the camera.
+\begin{enumerate}
+	\item What is the direction of the gaze vector?
+	\item What is the handedness vector?
+	\item What is the up vector?
+	\item Compute the matrix $C_1$ to transform an object from the world coordinate system to the camera coordinate system (without project).
+	\item Compute the matrix $C_2$ to transform an object from the world coordinate system to the camera coordinate system with the COP at the origin and the viewing plane at z= +40.
+	\item Compute the positions of the final transformed vertices.
+\end{enumerate}
+\newpage
+\textbf{Answers to the previous questions}
+\newline
+\begin{enumerate}
+	\item $N = [-0.50, -0.25, -0.83]$
+	\item $V = [-0.86, 0, 0.51]$
+	\item $U = [-0.13, 0.97, -0.21]$
+	\item $C_1$ = $\begin{bmatrix}
+		0.857 & 0 & -0.514 & 0\\ 
+		-0.128 & 0.968 & -0.214 & 0\\ 
+		-0.498 & -0.249 & -0.830 & 120\\
+		0 & 0 & 0 & 1 
+	\end{bmatrix}$
+		\item $C_2$ = $\begin{bmatrix}
+	0.857 & 0 & -0.514 & 0\\ 
+	-0.128 & 0.968 & -0.214 & 0\\ 
+	-0.498 & -0.249 & -0.830 & 120\\
+	-0.013 & -0.006 & -0.021 & 3.010 
+	\end{bmatrix}$
+	\item $V_1 = [0.00, 3.29, 40.0]$
+	
+	$V_2 = [0.60, -0.60, 40]$
+	
+	$V_3 = [4.61, 1.05, 40]$
+	
+	$V_4 = [-1.33, 2.27, 40]$
+\end{enumerate}
+\section{References}
+No external references were needed on this section.
 \newpage
 \section{Misc. Definitions}
+This section covers general algorithms and definitions from Rendering to Texture Mapping. Since the exam will focus more on the previous parts for the more technical questions, this part will mostly be structured as a set of definitions.
 \newpage
 \section{Past Exam Practice}
 \subsection{2016}

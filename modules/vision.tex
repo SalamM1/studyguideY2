@@ -59,3 +59,44 @@ Ganglion cells have a higher action potential rate depending on the intensity an
 		{vision/visualpathway}}
 	\caption{\label{fig:lens} Visualising the visual pathway}
 \end{figure}
+
+\section{Edge Detection}
+\subsection{Convolving a Matrix}
+\begin{figure}[!htb]
+	\center{\includegraphics[width=9cm]
+		{vision/convolve}}
+	\caption{\label{fig:convolve} 3x3 convolution example}
+\end{figure}
+2D convolution of matrices is basically what the course is built off of, at least for edge detection. So its important to know how to do it. Given a 3x3 kernel and an MxN matrix, how does one convolve? Looking at the image, you will create a new matrix by overlaying the kernel with the matrix, multiplying each term on the kernel with the value it overlays and then sum them all up. The new generated value will then be placed in the same position as the center of the overlay. 
+
+\textbf{Note: for even kernels, you can select either the top-left or top-right centre value as the "centre" of the matrix.}
+
+\subsection{First Order Operators}
+Edge detection operators are approximation of the first order derivative of the colors. The change in intensity of the colour from a set of points. The gradient of the intensity of colors. I could explain it in mnay different ways, but basically since edges are generally a different shade from its background, checking for a larger change in the intensity would usually return an edge point.
+\newline
+The approximations take the form of different kernels. Small kernels usually don't give a good enough approximation, and using too large a kernel would just blur all the values together and miss edges.
+\begin{enumerate}
+	\item Sobel Operator: The sobel operator uses two kernels; one for the x-gradient and one fo the y-gradient. $G_x =
+	\begin{bmatrix}
+		-1 & 0 & +1 \\
+		-2 & 0 & +2 \\
+		-1 & 0 & +1
+	\end{bmatrix}$ and $G_y = 
+		\begin{bmatrix}
+	-1 & -2 & -1 \\
+	0 & 0 & 0 \\
+	+1 & +2 & +1
+	\end{bmatrix}$
+	\item roberts is diagonal, so only uses one kerne;
+\end{enumerate}
+
+\subsection{Second Order Operators}
+laplace - but is very noisey
+guassian noise removal
+convolve 1D matrices because faster and still ends up with the same values
+
+\subsection{Canny Edge Detection}
+has steps
+
+\subsection{References}
+\href{http://fourier.eng.hmc.edu/e161/lectures/canny/node1.html}{Canny Edge Detection}

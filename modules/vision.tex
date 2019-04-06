@@ -87,16 +87,78 @@ The approximations take the form of different kernels. Small kernels usually don
 	0 & 0 & 0 \\
 	+1 & +2 & +1
 	\end{bmatrix}$
-	\item roberts is diagonal, so only uses one kerne;
+	\item Roberts Operator: The roberts operator can also use two kernels, but it instead measures the change diagonally. $G_x =
+	\begin{bmatrix}
+	+1 & 0 \\
+	0 & -1 \\
+	\end{bmatrix}$ and $G_y = 
+	\begin{bmatrix}
+	0 & +1 \\
+	-1 & 0 \\
+	\end{bmatrix}$
 \end{enumerate}
 
+Once we have applied $G_x$ and $G_y$, and assuming we have a threshold $h$ (the threshold can be found either with trial and error or setting up some Ai to test with a control set); the final edge pixels can be generated with the approximation:
+\begin{equation}
+I = (h > \left| G_x \right|  + \left| G_y \right| )
+\end{equation}
+
+Edges generated like this might be susceptible to noise, because derivatives are looking for changes in the intensity. Noise are not part of the source, but rather a bi product from the limitation of our cameras and files. (JPG compressed image for example) When a derivative filter is used, it will simply return the change in intensity from the noise as part of the image. Depending on the quantity of noise, it could end up being a complete mess.
+
+We can remove noise using the most common kernel, with the power of Gaussian. It is a gaussian distribution in the form of a 2D kernel, with the highest value in the centre of the matrix. The size of the matrix alters the effect of the noise filtering. A smaller matrix won't filter much, since it's not looking at a large enough space, and using too large a matrix will just blur the image together, removing edges.
+\begin{figure}[!htb]
+	\center{\includegraphics[width=9cm]
+		{vision/noiseMat}}
+	\caption{\label{fig:noiseMat}Gaussian Noise Filter overview}
+\end{figure}
+
+Rather than convolving the 2D gaussian with the image, there is a more efficient way to go about this. You can create two 1D matrices $(1xn, nx1)$ and convolve those instead. The result will be the same, and it will be much faster than just doing the 2D matrix as there are less computations to deal with.
+
 \subsection{Second Order Operators}
-laplace - but is very noisey
-guassian noise removal
-convolve 1D matrices because faster and still ends up with the same values
+There is also the option of using Second Order Derivative operators. These function slightly different than first order, as seen in the image. 
+Second Order Derivates look for the zero-crossings. These are the points the values of the graph change signs by crossing the 0-point of the axis. These points are the local maxima/minima in the first order operators. This method is very susceptible to noise, as noise will cause the function to cross zero many times. To alleviate these potential errors, we can apply a gaussian noise filter and a threshold for the distance needed to travel after crossing 0 to be counted as a "zero-crossing".
+The second order operator, Laplacian Operator, can be derived as follows:
+\begin{flalign}
+	\begin{split}
+	\frac{\partial^2 f}{\partial x^2} = &\frac{\partial G_x}{\partial x} \\
+    = &\frac{\partial (f[i,j+1] - f[i,j])}{\partial x} \\
+	= &\frac{\partial f[i,j+1]}{\partial x} - \frac{\partial f[i,j]}{\partial x} \\
+	= & (f[i, j+2] - f[i, j+1]) - (f[i,j+1] - f[i, j]) \\
+	= & f[i, j+2] - 2f[i,j+1] + f[i,j]
+	\end{split}
+\end{flalign}
+The equation above is centered on $[i, j+1]$; if we want to centre it on $j$, we simply do $-1$ on all terms, and up with the following stuff.
+\begin{flalign}
+	\begin{split}
+	\frac{\partial^2 f}{\partial x^2} = & f[i, j+1] - 2f[i,j] + f[i,j-1] \\
+	\frac{\partial^2 f}{\partial y^2} = & f[i+1, j] - 2f[i,j] + f[i-1,j] \\
+	\Delta^2 \approx & \begin{bmatrix}
+	0 & 1 & 0 \\
+	1 & -4 & 1 \\
+	0 & 1 & 0
+	\end{bmatrix}
+	\end{split}
+\end{flalign}
+
+We can also place the equation inside of a gaussian distribution function, and end up with a Laplacian of Gaussian (LoG), a potentially efficient second order operator.
 
 \subsection{Canny Edge Detection}
-has steps
+Our new friend and scientist, J. Canny, has shown that the first derivative of the Gaussian closely approximates the operator that optimizes the product of signal - to - noise ratio and localization.
+
+Canny Edge Detection is sort of a standard (its pretty good). There are four major steps to canny edge detection.
+\begin{enumerate}
+	\item Find $f_x = f * G_x$ and $f_y = f * G_y$ where $G(x,y)$ is the gaussian function and $G_{x/y}$ is the derivative with respect to the required variable. $G_a = \frac{-a}{\sigma^2}(G(x,y))$
+	\item Compute the gradient magnitude and direction.\[ mag(x,y) = \left| f_x \right| + \left| f_xy \right| \] \[dir(x,y) = \arctan{\frac{f_y}{f_x}}\]
+	\item Apply non-maxima suppression. In simpler math terms, check if the gradient magnitude at a pixel is a local maximum along the gradient direction.
+	\item Apply hysteresis thresholding. This is fancy for applying a threshold at a low value $t_l$ and a high value $t_h$, which is usually twice $t_l$. First mark the edges generated from the high threshold, as these are strong edges and are generally genuine. Trace an edge with the bidirectional information and, while tracing, apply the lower threshold to trace faint sections of edges that have a start point.
+\end{enumerate}
+
 
 \subsection{References}
 \href{http://fourier.eng.hmc.edu/e161/lectures/canny/node1.html}{Canny Edge Detection}
+
+\href{https://pdfs.semanticscholar.org/d5c1/d380263318c1b7a7d298500b3617e55ef2fa.pdf}{A paper on Edge Detection}
+
+\href{http://www.me.umn.edu/courses/me5286/vision/VisionNotes/2017/ME5286-Lecture7-2017-EdgeDetection2.pdf}{Good Lecture on Topic}
+
+\section{Object Recognition}

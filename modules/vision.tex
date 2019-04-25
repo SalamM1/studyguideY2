@@ -162,10 +162,66 @@ Canny Edge Detection is sort of a standard (its pretty good). There are four maj
 \href{http://www.me.umn.edu/courses/me5286/vision/VisionNotes/2017/ME5286-Lecture7-2017-EdgeDetection2.pdf}{Good Lecture on Topic}
 
 \section{Facial Recognition}
+This section deals with the general idea of Facial Recognition.
 \subsection{Eigenfaces}
+Lets start by thinking of the face as a weighted combination of different components or representations of said face. These components are referred to as Eigenfaces (because who needs real words). Luckily, we can represent all these components as vectors. Eigenfaces are used in two ways; either as a form to store faces for later reconstruction or for recognition of a new image of a familiar face. We can do the learning using Principle Component Analysis (PCA).\newline
+Given a set of points in 2D, as in the image, you can use vectors in the place of the usual line of best fit. When we use vectors, we would ideally want it to be in normal form with a scaling factor applied to it. This is where Eigenvectors come in. Eigenvectors take the following form: \[\boldmath{A}\vec{v} = \mu\vec{v}\] where $\mu$ is referred to as the "eigenvalue". Eigenvectors are obtained from a matrix, and follow some rules.
+\begin{itemize}
+	\item Only square matrices have eigenvectors
+	\item Different matrices have different eigenvectors
+	\item Not all square matrices have eigenvectors
+	\item An $n \times n$ matrix has at most $n$ distinct eigenvectors
+	\item All distinct eigenvectors of a matrix are orthogonal
+\end{itemize}
+You ask, where do we get the matrix in this instance? We do it by finding a covariance matrix. Since we have a 2D plot of points, we can generate a 2x2 covariance matrix. This can be done by the following equations, the first for the covariance matrix, and the other for the variance function.
+\[	C = \begin{bmatrix}
+Var(x_1) & Covar(x_1, x_2) \\
+Covar(x_1,x_2) & Var(x_2)
+\end{bmatrix}\]
+\[ Covar(x_1, x_2) = \frac{\sum_{i=1}^{n}(x_1^i - \bar{x_1})(x_2^i - \bar{x_2})}{n-1}\]
+With faces, we treat the face as a point in a high-dimensional space, and then treat the training set of faces as our set of points. We calculate the eigenvectors of our training set, and these become our eigenfaces. \textbf{TL;DR Eigenfaces are eigenvectors of covariance matrix of training set of faces}\newline
+When given an image of a face, we can transform it into face space (Facebook?) by applying the following equation: \[w_k = x^i\vec(v_k)\] where $k$ is the number of eigenfaces, with the $i^{th}$ face in image space, and a corresponding weight $w$. Image recognition becomes easy, simply find the euclidean distance of the desired face and all faces stored; the closest face is most likely our match. You can also reconstruct a face from the eigenfaces. The more eigenfaces the better the reconstruction.
 \subsection{References}
-\section{Object Recognition}
+Just the slides
+\section{Vision Systems}
+This section deals with feature detection of vision systems.
 \subsection{Invariants}
-\subsection{Motion Tracking}
+Ideally, we would like some invariance in different settings for what we would like to see.
+\begin{enumerate}
+	\item Illumination: Can be achieved by normalising the light levels and storing the new normal intensities. Can also used difference based metrics (sift).
+	\item Scaling: Store pyramids of the image, with each step half the size of the original. Find pixel values with Gaussian blur. Can also use Scale Space method, using Difference Gaussians to find repeatable points (invariant) in scale.
+	\item Rotation: Rotate all features to go the same way in a determined manner. Take histogram of gradient directions and rotate to the most dominant.
+\end{enumerate}
 \subsection{Feature Detection}
-\subsection{Misc.}
+In motion tracking, our goal is to see things that move between a set of images. You can begin by knowing which of the four following cases fits best:
+\begin{enumerate}
+	\item Stationary Camera, Stationary Objects
+	\item Stationary Camera, Moving Object
+	\item Moving Camera, Stationary Objects
+	\item Moving Camera, Moving Object
+\end{enumerate}
+When detecting change, you can compare the intensity at one point in time with its previous incarnation (or any other, if you need something specific). However, this lends to issues appearing from random noise, which will pop up everywhere. What we want is to then filter out our noise, but how do we do such a thing?
+
+We can use the idea of 8 or 4 connectedness. Two pixels are 4-neighbours if they share an edge, and are 8-nieghbours if they share a corner. Two pixels are 8-connected if we can create a path of 8-neighbours from one to another. We can use these concepts and group pixels into clusters. We can then threshold the clusters and remove any clusters that are below said threshold, ideally leaving behind just the changes and removing noise.
+\begin{figure}[!htb]
+	\center{\includegraphics[width=9cm]
+		{vision/moravec}}
+	\caption{\label{fig:moravec}Gaussian Noise Filter overview}
+\end{figure}
+However, just seeing the difference in pixels might not be enough. Ideally, we would want to find our points of interest and compare those points between images. For this, we can use the Moravec operators, a corner detector. Corners are better than edges for this task because corners can measure the highest intensity change, as oppose to edges. The image explains how the Moravec operators works. Once we obtain our new values from our friend Moravec, we can just keep the local maxima.\newline
+
+Motion Correspondence has three main principles we need to worry about.
+\begin{enumerate}
+	\item Discreteness: Measure of the distinctiveness of individual points
+	\item Similarity: Measure of how closely two points resemble one another
+	\item Consistency: Measure of how well a match conforms with nearby matches
+\end{enumerate}
+\subsection{Object Detection}
+Object recognition needs the following components:
+\begin{enumerate}
+	\item Model Database: Stores all models known by the system; information stored depending on approach for recognition. Generally, these values are abstract (shape, colour, size, etc.)
+	\item Feature Detector: Applies operators to image and identifies location of features. How a feature detector works depends on what types of models are stored in the database.
+	\item Hypothesizer: Assigns likelihoods to objects present to reduce computational expense.
+	\item Hypothesis Verifier: Uses object models to verify hypothesis and refines the hypothesizer likelihood. 
+\end{enumerate}
+Each of these components come with issues, mostly related to what sort of thing you want to do. (2D vs 3D, model vs object, etc.)

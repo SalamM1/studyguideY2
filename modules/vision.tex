@@ -206,7 +206,7 @@ We can use the idea of 8 or 4 connectedness. Two pixels are 4-neighbours if they
 \begin{figure}[!htb]
 	\center{\includegraphics[width=9cm]
 		{vision/moravec}}
-	\caption{\label{fig:moravec}Gaussian Noise Filter overview}
+	\caption{\label{fig:moravec}Gaussian Moravec Operator Overview}
 \end{figure}
 However, just seeing the difference in pixels might not be enough. Ideally, we would want to find our points of interest and compare those points between images. For this, we can use the Moravec operators, a corner detector. Corners are better than edges for this task because corners can measure the highest intensity change, as oppose to edges. The image explains how the Moravec operators works. Once we obtain our new values from our friend Moravec, we can just keep the local maxima.\newline
 

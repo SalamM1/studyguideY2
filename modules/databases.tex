@@ -1,0 +1,107 @@
+\section{Databases and Sets}
+This section deals with some definitions and how to formulate SQL Queries
+\subsection{Definitions}
+\paragraph{Relations}
+\begin{itemize}
+	\item Domain (D): An arbitrary (non-null) set of atomic values
+	\item Attribute Name (A): A symbol with an associate domain
+	\item Relational Schema (R): A finite set of attribute names
+	\item Tuple (t): a mapping from the attributes of a relational schema to the union of their domains
+	\item Relation (r): A finite set of tuples of relational schema
+	\item Degree: Number of attributes [columns in an SQL table]
+	\item Cardinality: Number of tuples [rows in an SQL table]
+\end{itemize}
+\paragraph{Keys}
+\begin{itemize}
+	\item Superkey: a set of attributes that can \textit{always} be used to differentiate one tuple from another
+	\item Key - a minimal superkey
+	\item Concatenated Key -  a key with more than one attribute
+	\item Candidate Key - any key
+	\item \textbf{Primary Key} - one of the candidate keys used to reference from other relations
+	\item \textbf{Foreign Key} - an attribute of the relation which is a key for another relation
+\end{itemize}
+\paragraph{Data Types}
+\begin{itemize}
+	\item BOOLEAN: TRUE, FALSE, or NULL
+	\item Strings: 
+	\begin{itemize}
+		\item CHAR(length)
+		\item CHARACTER(length)
+		\item VARCHAR
+		\item TEXT
+	\end{itemize}
+	\item INTEGER
+	\item REAL: A floating point
+	\item Arbitrary Precision:
+		\begin{itemize}
+			\item NUMERIC
+			\item DECIMAL
+			\item MONEY
+		\end{itemize}
+	\item Date and Time
+		\begin{itemize}
+			\item TIMESTAMP
+			\item DATE
+			\item TIME
+		\end{itemize}
+\end{itemize}
+\paragraph{Constraints}
+\begin{itemize}
+	\item DOMAIN: The domain/type of the attributes; eg INTEGER, VARCHAR
+	\item NOT NULL: Ensures the column will not have a null value
+	\item UNIQUE: Ensures uniqueness
+	\item PRIMARY KEY: Not-null, unique column used as a primary identifier of a row
+	\item FOREIGN KEY: Unique identifier to a row from another table
+	\item CHECK(condition): Ensures all values in the column meet the defined condition (eg. cost $>$ 10)
+	\item DEFAULT(default): Sets the value to the given value if no other value is specified on creation
+\end{itemize}
+\paragraph{Foreign Key Syntax}
+\begin{itemize}
+	\item ON DELETE (action): Does the specified action when the key or referenced table is deleted
+	\item ON UPDATE (action): Does the specified action when the key or referenced table is updated
+	\item NO ACTION: Action - Does nothing
+	\item CASCADE: Action - cascades the change on the original to the value found in the foreign table
+	\item SET NULL: Action - sets the value to null in the foreign table
+	\item SET DEFAULT: Action - sets the value to default in the foreign table
+\end{itemize}
+
+\subsection{SQL Statements}
+\paragraph{CREATE}
+\begin{verbatim}
+CREATE TABLE tableName (
+	attributeName TYPE CONTRAINTS,
+	attributeName2 TYPE CONTRAINTS,
+	exampleID TYPE CONSTRAINTS,
+	exampleID2 TYPE CONSTRAINTS,
+
+	PRIMARY KEY (exampleID),
+	FOREIGN KEY (exampleID2) REFERENCES  otherTable(id)
+		ON UPDATE action
+		ON DELETE action;
+)
+\end{verbatim}
+
+\paragraph{INSERT}
+\begin{verbatim}
+INSERT INTO tableName VALUES  (valueA, valueB, valueC, ...);
+INSERT INTO tableName(attributeA, attributeB, attributeC) 
+VALUES  (valueA, valueB, valueC);
+\end{verbatim}
+
+\paragraph{UPDATE}
+\begin{verbatim}
+UPDATE tableName SET attributeA = valueA WHERE id = valueID;
+\end{verbatim}
+
+\paragraph{DELETE}
+\begin{verbatim}
+	DELETE FROM tableName WHERE attributeA = valueA;
+\end{verbatim}
+
+\paragraph{SELECT}
+\begin{verbatim}
+	SELECT *
+\end{verbatim}
+\section{ER Diagrams}
+\section{JDBC}
+\section{Concurrency}

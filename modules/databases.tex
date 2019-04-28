@@ -60,6 +60,7 @@ This section deals with some definitions and how to formulate SQL Queries
 	\item ON DELETE (action): Does the specified action when the key or referenced table is deleted
 	\item ON UPDATE (action): Does the specified action when the key or referenced table is updated
 	\item NO ACTION: Action - Does nothing
+	\item RESTRICT: Action - will not allow user to delete/update the key/referenced table
 	\item CASCADE: Action - cascades the change on the original to the value found in the foreign table
 	\item SET NULL: Action - sets the value to null in the foreign table
 	\item SET DEFAULT: Action - sets the value to default in the foreign table
@@ -69,21 +70,22 @@ This section deals with some definitions and how to formulate SQL Queries
 \paragraph{CREATE}
 \begin{verbatim}
 CREATE TABLE tableName (
-	attributeName TYPE CONTRAINTS,
-	attributeName2 TYPE CONTRAINTS,
-	exampleID TYPE CONSTRAINTS,
-	exampleID2 TYPE CONSTRAINTS,
+    attributeName TYPE CONTRAINTS,
+    attributeName2 TYPE CONTRAINTS,
+    exampleID TYPE CONSTRAINTS,
+    exampleID2 TYPE CONSTRAINTS,
 
-	PRIMARY KEY (exampleID),
-	FOREIGN KEY (exampleID2) REFERENCES  otherTable(id)
-		ON UPDATE action
-		ON DELETE action;
+    PRIMARY KEY (exampleID),
+    FOREIGN KEY (exampleID2) REFERENCES  otherTable(id)
+        ON UPDATE action
+        ON DELETE action;
 )
 \end{verbatim}
 
 \paragraph{INSERT}
 \begin{verbatim}
 INSERT INTO tableName VALUES  (valueA, valueB, valueC, ...);
+
 INSERT INTO tableName(attributeA, attributeB, attributeC) 
 VALUES  (valueA, valueB, valueC);
 \end{verbatim}
@@ -100,7 +102,7 @@ UPDATE tableName SET attributeA = valueA WHERE id = valueID;
 
 \paragraph{SELECT}
 \begin{verbatim}
-	SELECT *
+	SELECT * FROM tableName WHERE condition
 \end{verbatim}
 \section{ER Diagrams}
 \section{JDBC}

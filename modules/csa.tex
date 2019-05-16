@@ -152,8 +152,37 @@ In the datapath there are a few control wires added; the Main Control unit is in
 	\caption{\label{fig:control} Control Requirements Table per instruction}
 \end{figure}
 We will look at two ways to implement CPU Control in our every day von Neumanns. We have \textbf{Single Cycle Control} that uses a stateless logic whose input is the 6-bit opcode and whose outputs are the control signals. This is useful if the instructions can be completed in one cycle. In reality though, some operations will take multiple cycles due to the different operations, such as memory access, being slower than others.
-\paragraph{Multiple Cycle Control}
 
+\subsection{State Control}
+Finite State Machines, rather than being stateless, has, well, states. We learned two ways of implementing them, Mealy states machines and Moore state machines. In a Mealy state machine, the outputs and the next state are a combinatorial function of both the state and the inputs, whilst in a Moore state machine, the outputs are a function of the state only while the next state depends on the inputs and current state. \newline What this means is that the output of a Moore machine can only change on the clock edge, whilst the output of a mealy machine can change asynchronously when the inputs change. Which of these is desirable is based on the application. Here are the main factors to consider when designing a FSM:
+\begin{itemize}
+	\item Determine how many states are needed and how to enumerate them
+	\item Determine the sequence of state transitions
+	\item Write down truth tables for the combo logic
+	\item Implement the logic
+\end{itemize}
+\begin{figure}[!htb]
+	\center{\includegraphics[width=11cm]
+		{csa/statemachines}}
+	\caption{\label{fig:states} Mealy VS Moore (brawl of the century)}
+\end{figure}
+In general, these are the major differences between Mealy and Moore.
+\begin{enumerate}
+	\item Mealy machines tend to have fewer states
+	\begin{itemize}
+		\item Different outputs on arcs rather then states
+	\end{itemize}
+	\item Moore machines are safer to use:
+	\begin{itemize}
+		\item Outputs change at clock edge (delayed one cycle)
+		\item In Mealy, only when logic is done is the output changed, causes problems with interconnected machines
+	\end{itemize}
+	\item Mealy machines react faster to inputs
+	\begin{itemize}
+		\item React in same cycle, no need to wait for the clock
+		\item In moore machines, more logic may be necessary to decode state into outputs; more gates == more delays
+	\end{itemize}
+\end{enumerate}
 \section{Optimisation}
 \subsection{Pipelining}
 \paragraph{Overview}
@@ -162,7 +191,7 @@ Pipelining is defined as (thanks google): a form of computer organization in whi
 \paragraph{MIPS Pipeline}
 The MIPS pipeline has registers added to store intermediate results plus any additional control information.
  \begin{figure}[!htb]
-	\center{\includegraphics[width=16cm]
+	\center{\includegraphics[width=14cm]
 		{csa/pipeline}}
 	\caption{\label{fig:pipeline} MIPS Datapath Pipeline}
 \end{figure}
@@ -174,9 +203,22 @@ The MIPS pipeline has registers added to store intermediate results plus any add
 	\item Temporal locality: When an item is referenced, you are likely to access it again soon.
 \end{enumerate}
 At the most fundamental level, caches are just a block of memory. However, caches need to store a copy of a value from the main memory and its address in the main memory. This address is often called the cache tag. When the CPU is accessing the main memory, it goes through the cache and compares the tag with the address its looking for. It can either hit or miss; because this check is done every time, a cache will add more time than without a cache on a cache miss.
-\paragraph{Cache Associativity}
+\paragraph{Cache Associativity} One of the biggest factors affecting cache performance is its degree of associativity. This is the number of different locations that an item of data can occupy in the cache. One of the most common cache designs is the direct-mapped cache AKA one way associative. Data from each address in main memory can only go in one location in the cache, making access time to the cache fast. The way this works is, a subset of the address is hard-coded into the cache (eg. 111xxxx) The remaining bits are checked against the tag for the entry. \newline
+The main issue with direct-mapped caches is that two items of the same subset (111x, 111y) cannot be stored simultaneously, resulting in potential thrashing, where entries in a cache continuously swap, destroying any performance benefit you dreamt of. The best way to potentially deal with thrashing is in an n-associative cache, where each address maps to $n$ cache entries (eg. 10, 01) and multiples of them can exist. A cache where the $n$ is the same number of locations in the cache is said to be fully associative. Positive include no thrashing and lower main memory accesses, negatives include slower access time to accommodate for the cache.
+\paragraph{Cache Refill Strategies}
+Following a cache miss, temporal locality states the new data accessed in the main memory should be moved to the cache. We use a data structure known as least-recently-used (LRU) queue, which removes the lease recently used item when inserting an item to a full list. Ofcourse, this might not be the best plan, but it is up to the designer to figure out the best refill policy as it can different between machines, code, and any other cache usage factor.
+\paragraph{Cache Writing Strategies}
+Reading from a cache is hit or miss, pretty simple. 
 \paragraph{Performance Benefits}
-
+Cache performance is a calculation that is really simple. You take the proportion of instruction time used on on memory access, and convert the amount that would be a hit on the cache to the cache access time, and just like magic, you have the new time. \[T = N(t_{cyc} + m(t_{cache} + (1-h)t_{mem}))\]
+\begin{itemize}
+	\item $N$ = Number of instructions
+	\item $t_{cyc}$ = The cycle time
+	\item $t_{mem}$ = Memory cycle time (Additive to cycle time)
+	\item $t_{cache}$ = Cache access time
+	\item $m$ = The proportion of memory access instructions
+	\item $h$ = Cache hitrate
+\end{itemize}
 \section{Number Representations}
 \subsection{Types}
 \paragraph{Base Two}
@@ -253,4 +295,8 @@ If you've done Minecraft Redstone, you might find yourself at home on this secti
 \end{figure}
 \paragraph{Adder to ALU}
 From here, all we do is take our 32-bit adder, stick in some AND and OR gates (to handle the appropriate operation) and some multiplexers to know which operations are required. This creates an ALU.
-
+\begin{figure}[!htb]
+	\center{\includegraphics[width=14cm]
+		{csa/aluadders}}
+	\caption{\label{fig:aluadders} General 32-bit ALU design with the adders}
+\end{figure}

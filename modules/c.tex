@@ -116,10 +116,58 @@ Speed optimization tactics:
 These are just some optimization techniques. In practice, code optimization is on a code to code basis.
 
 \section{C++}
-\subsection{Classes}
-classes and inheritance
-constructor/destructor
-polymorphism
+This section deals with features in C++ and why its used more than C.
+\subsection{Introduction}
+\paragraph{C++} C++, as the name suggest, is an increment to C. While it has all of the features C has, it also has some bonus features. It's primary purpose is to make C an object oriented programming language, adding classes, constructors/destructors, and various other features for polymorphism and memory management.
+\paragraph{Reference Variable} One thing we can do in C++ is creating a reference variable. Reference variables are similar to pointers in that you can pass them into functions to pass by reference, but you do not need to dereference it with ($^*$p), as it is already dereferenced by nature. This allows you to bypass on using pointers in the case you only want to pass a reference variable. The syntax to declare a reference is \textbf{int \&r}; much like declaring a pointer type but using \& instead of *.
+\paragraph{Overloaded Functions} In C, a function's signature is its name, so you cannot have two different functions with the same name even if they had different parameters. This is not the case with C++. A function's signature is comprised of three things.
+\begin{enumerate}
+	\item Name
+	\item Number of Parameters
+	\item Type of Parameters
+\end{enumerate}
+Meaning the functions \textbf{void foo()} and \textbf{void foo(int a)} have different signatures. Note that the return type of a function is not a part of its signature, meaning \textbf{int foo()} and \textbf{void foo()} have the same signature and will cause an exception.
+
+\paragraph{Classes} C++ has the ability to have classes for the object-oriented programming. When declaring a class, you can define members and functions in either the private or the public region. By default, members and functions are private, so the private region can be omitted. 
+\begin{figure}[!htb]
+	\center{\includegraphics[width=6cm]
+		{c/classes}}
+	\caption{\label{fig:classes} Private members and public functions example}
+\end{figure}
+\paragraph{Constructor} C structs are not exactly objects. They cannot be initialized at time of declaration, they have to done at separate lines. C++ classes, on the other hand, can be initialized at time of declaration. We do this using constructors. Constructors are a special member function that has the same name as the class. In the body of the constructor method, we can initialize values to default, or accept them from an input. The syntax for a constructor is the same as any other method, but the name has to be the same name as the class.
+\paragraph{Copy Constructor} A copy constructor is one that receives a reference to its own class as a parameter, such as \textbf{class(class \&c)} as a constructor. You CANNOT pass in the value of the class, it has to be by reference. You can then access the passed in reference and copy the values as you see fit, as if it ws any other method.
+\paragraph{Destructors} A destructor is a special member function whose name is the same as the class with a $\sim$ appended behind it. \textbf{$\sim$ class()}. Destructors are called in two instances; when a temporary object passes out of its scope, and when we use the "delete" operator (next section). It is the responsibility of the programmer to deal with what happens in the destructor.
+\paragraph{New and Delete} C++ introduces two operators we can use for managing memory; \textbf{new} and \textbf{delete}. These are used to manage dynamically allocated memory; new is for declaring memory blocks and delete is for freeing memory blocks (similar to malloc and free). Using new allows us to initialize and declare an object at the same time, while delete explicitly calls the destructor and does whatever you need it to do.
+\subsection{Inheritance}
+\paragraph{Operator Overloading} C++ aims to make user defined classes almost the same as built in types, like int. One of things we can do with built in types is manipulate them with operators, like \textbf{+} - r\textbf{-}. User defined classes don't have these operators by default, so we have to define them ourselves. We do this using a special method referred to as an operator function. For example, if we wanted to define \textbf{+} for our class, we would declare our function's return type as its own class, and the function's signature would look like \textbf{operator +(class c)}. This is results in the following to mean the same thing/
+\begin{itemize}
+	\item c$\_$sum = c1 + c2;
+	\item c$\_$sum = c1.operator+(c2);
+\end{itemize} 
+The left hand side calls the function with the right hand side as the argument. You can also have operators without arguments, such as negation (-c1).
+\paragraph{Friend Function} What if we wanted to add a float with our own class? This is easy if we use the float as the argument as \textbf{operator +(float f)}. But what if the float is the one calling its own function? We can't just redefine the operators in the float data type, so we need to use a different method, called friend functions. Friend functions are defined outside of the class scope, but it has access to all private and protected members of a class. Our \textbf{operator +(float f)} can now be defined as \textbf{friend operator +(class c, float f)} and we can now add in when our argument is float on the left as \textbf{friend operator +(float f, class c)} Note: the overloaded operator function must have at least one operand of the class it is in.
+\paragraph{Inheritance} Classes in C++ can inherit from one another, much like in java. There are a few types of inheritance to cover in C++.
+\begin{itemize}
+	\item Single Inheritance: A derived class inherits from a single base class
+	\item Multiple Inheritance: A derived class inherits from more than one base class
+	\item Multilevel Inheritance: A derived class inherits from another derived class; like a chain.
+	\item Hybrid Inheritance: A wombo combo of other inheritances
+\end{itemize}
+\begin{figure}[!htb]
+	\center{\includegraphics[width=12cm]
+		{c/inheritance}}
+	\caption{\label{fig:inheritance} Syntax for Single Inheritance}
+\end{figure}
+\paragraph{Visibility} Access mode, as seen in \figurename{inheritance}, can either be private or public, with the default being private. If it is public, then the public members of the base class are inherited as public members, otherwise the inherited members become private. When doing multiple inheritance, the syntax is the same as for one base class, but we separate the multiple base classes with commas. Note: private members of base classes are not inherited! \newline
+Now what if we wanted to inherit something, but we didn't want it to be public in the base class? There is a third visibility identifier we call "protected." Protected members are public for its children, but are private for all other areas. Access mode can also be protected in inheritance declaration. 
+\paragraph{Virtual} Sometimes, we can accidentally inherit functions with the same signatures from different classes. What we can do is declare functions as virtual. Virtual functions are ones that are expected to be overridden in their child classes (similar to abstract in Java, but they still function as normal in the parent class) You can also declare parent classes to be virtual, this helps to stop multiple copies of the same grandparent to be created.
+
+\subsection{Memory Management}
+\paragraph{C vs C++}
+C provides \textbf{malloc(), calloc(), realloc()} for dynamic memory allocation, and \textbf{free()} for dynamic memory deallocation. C++ provides \textbf{new} for ynamic memory allocation, and \textbf{delete} for dynamic memory deallocation. C++ provides some additional bonuses too, it provides the manual memory management as we have seen so far, but it can also provide the convenience of garbage collection when desired. We get garbage collection C++ using smart pointers.
+\paragraph{Smart Pointers} 
+\paragraph{Rule of Five}
+
 \subsection{Templates}
 templates
 exception handling

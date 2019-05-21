@@ -27,26 +27,179 @@ This section deals with operations on vectors and matrices that are commonly use
 \subsection{Matrix Operations}
 \textbf{Multiply}
 \begin{equation}
-a x b = coming soon
+a \times b = \begin{bmatrix}
+(a_{1,1} * b_{1,1} + a_{1,2}*b_{2,1} + ...) & (a_{1,1} * b_{1,2} + a_{1,2}*b_{2,2} + ...) \\
+(a_{2,1} * b_{1,1} + a_{2,2}*b_{2,1} + ...) & (a_{2,1} * b_{1,2} + a_{2,2}*b_{2,2} + ...) \\
+... & ...
+\end{bmatrix}
 \end{equation}
 \textbf{2x2 Determinant}
+\begin{equation}
+	det (\begin{bmatrix}
+	a & b \\ c & d
+	\end{bmatrix})  = ad - bc
+\end{equation}
 \textbf{3x3 Determinant}
-\textbf{Row Operations}
-\textbf{Inverting a Matrix}
+\begin{equation}
+	det (\begin{bmatrix}
+		a & b & c\\ d & e & f \\ g & h & i
+	\end{bmatrix})  = a \times det(\begin{bmatrix}
+	e & f \\ h & i
+	\end{bmatrix}) - b \times det(\begin{bmatrix}
+	d & f \\ g & i
+	\end{bmatrix}) + c \times det(\begin{bmatrix}
+	d & e \\ g & h
+	\end{bmatrix})
+\end{equation}
 
 \section{Fields}
 This section deals with the little we need to know about Galois Fields, primarily GF(2).
 \subsection{Notes}
-\subsection{Proofs}
+\paragraph{Definition} Fields can be thought of as a "number system" in mathematics that has the ability to do, at least, be added and multiplied. The number system can be defined however we like, but it needs to follow a set of rules.
+\begin{itemize}
+	\item There must be a definition for "0" and "1" such that $x+0 = x$ and $x^*1 = 1$
+	\item Addition and Multiplication are associative and commutative
+	\item Multiplication distributes over addition
+	\item There must be valid solutions/proofs for $a + x = 0$ and $a^*x = 1$
+\end{itemize}
+\paragraph{GF(2)} One particular field we use a lot is GF(2). the binary field. GF(2) only has the values "0" and "1" in its field. Multiplying in this field is the same in the field of integers we are used to, but there is one change in addition. $1 + 1$ evaluates to $0$ in GF(2).
+\paragraph{Proving Laws} Prove that $a + x = 0$ and $a^*x = 1$ only have \textbf{one} solution.
+\begin{equation}
+\begin{split}
+	x_1&= x_1 + 0 \\
+	&= x_1 + (a + x_2) \\
+	&= (x_1 + a) + x_2 \\
+	&= (0) + x_2 \\
+	&= x_2 
+\end{split}
+\end{equation}
+\begin{equation}
+	\begin{split}
+	x_1&= x_1^*1 \\
+	&= x_1^*(a^*x_2) \\
+	&= (a^*x_1)^*x_2 \\
+	&= (1)^*x_2 \\
+	&= x_2 
+	\end{split}
+\end{equation}
 
 \section{Lines and Planes}
 This section covers everything done regarding systems of equations regarding lines and planes.
-\subsection{Notes}
-\subsection{Examples}
+\subsection{Gaussian Elimination}
+\paragraph{Algorithm} Gaussian Elimination can be described as a recursive algorithm used to solve a system of linear equations. It's a process we can use that is fairly robust. Gaussian elimination converts the system into matrix form, and we then perform row operations on it. Take for example this system.
+\begin{equation}
+\begin{split}
+x_1 + 5x_2 - 2x_3 = -11 \\
+3x_1 - 2x_2 + 7x_3 = 5 \\
+-2x_1 - x_2 - x_3 = 0
+\end{split}
+\end{equation}
+If we were to translate this to matrix form, it would look like this:
+
+\[ \left[ \begin{array}{ccc|c}
+1& 5&-2& -11 \\
+3&-2& 7& 5 \\
+-2&-1&-1& 0
+\end{array}\right]\]
+
+\paragraph{Row Operations} In matrix form, we can now commit to row operations. There are three possible row operations that we can use and mix and match.
+\begin{itemize}
+	\item Swap rows: Swap the location of two rows. (eg. R1 $\leftrightarrow$ R3)
+	\item Multiply a row with a constant: You can multiply each term in a row with a constant
+	\item Add two rows: You can add two rows and replace one of the addends with the sum.
+\end{itemize}
+Our goal with row operations to reach row echelon form; such as this form: 
+\[ \left[ \begin{array}{ccc|c}
+1 & 0 & 0 & a \\
+0 & 1 & 0 & b \\
+0 & 0 & 1 & c
+\end{array}\right]\]
+This is interpreted as $x_1 = a$, $x_2 = b$, and so forth.
+
+\paragraph{Special Cases} There are two special cases
+\begin{enumerate}
+	\item Contradictory equations. If an equation results in a contradiction (eg. $ 0 + 0 = 1$) then we can determine that there is no solution to our system.
+	\item Irrelevant equation. If one the equations becomes entirely made of $0$, then that equation is irrelevant and we have one less equation to work with. This usually results in one unknown that is then declared to be chosen freely. This can also happen when we have two equations for one unknown. 
+\end{enumerate}
+\paragraph{Matrix Inverse} The gaussian can also be interpreted in the form \[\mathbf{A}x = \mathbf{C}\] Where \textbf{A} is the $N \times N$ constants applied to the unknowns, \textbf{x} is the $N \times 1$ unknowns, and \textbf{C} is the $N \times 1$ constants in the equation. To solve an equation set up this way, we would normally divide A from both sides, but with matrices division isn't defined. So we need to do accomplish the inverse of multiplication another way. We do this using inverse matrices, $\mathbf{A^{-1}}$.
+\newline
+The inverse is defined with the following equation; \[ \mathbf{A}\mathbf{A^{-1}} = \mathbf{I}\] Where I is the identity matrix. There a few rules regarding inverse matrices that the base matrix has to pass. 
+\begin{itemize}
+	\item It must be a square matrix.
+	\item The determinant of the matrix cannot be 0.
+\end{itemize}
+Once we know our base matrix has an inverse, we can find it using row operations. We do row operations on our base matrix until it reaches row echelon form. While doing so, we apply the same operations to the identity matrix. The result of the operations done on the identity matrix is the inverse matrix.
+\subsection{Lines}
+\paragraph{Parametric Representation} Lines, we know 'em, we love 'em. Lines are comprised of many points on a grid, and a point is comprised of coordinates. These coordinates are often represented as vectors. We are used to the normal form of a line equation; \[ y = m \times x + b\] but we have also learned how to represent a line in vector form. Given two points, $P_1$ and $P_2$, we can construct an equation.  We need to find the vector between $P_1$ and $P_2$; the difference (as $\vec{V}$) which can be interpreted as the slope. We can then take one of the points, and add it with our difference vector $\vec{V}$ multiplied with a scaling factor, and we can, using the scaling factor, generate any point on the line. \[ \mathbf{X} = P_1 + Vt\]
+\paragraph{Intersecting Lines} What if we want to find the point two lines intersect? This is really easy! What we do is we set the lines equal to each other $X = Y$, and this generates a system of linear equations of sorts(where each row in the vector is an equation). Move the numbers around, and we can then use Gaussian elimination to solve for the value scaling factors. To get the point, simply plug in the appropriate scaling factor back to its parent parametric equation and the result is your point of interest.
+
+\paragraph{Normal Form} To convert a line back to its normal form, we need to find the (unsurprisingly) normal. The normal is a $2 \times 1$ vector for lines, and can found with the following methods. Given $X = P + Vt$, $P = \begin{bmatrix}
+a \\ b
+\end{bmatrix}$ and $V = \begin{bmatrix}
+c \\ d
+\end{bmatrix}$, then the normal $N = \begin{bmatrix}
+n_1 = d \\ n_2 = -c
+\end{bmatrix}$ from here on, you plug in the values into the equation \[n_1x_1 + n_2x_2 = d\] all that's left is to solve for "d". in this case, $d = ad - cd$. (The d is the determinant!).
+
+\subsection{Planes}
+\paragraph{Parametric Representation} Lines are two dimensional. What if we wanted three dimensional parametric equations? These 3D sheets are called planes, and are mathematically similar to lines. Instead of being represented by two points, they are represented by three points. Given three points, $P$, $Q$ and $R$, and two scaling factors $s$ and $t$, the equation for a plane is represented by \[X = P + s \cdot \overrightarrow{PQ} + t \cdot \overrightarrow{PR}\] It's similar to that of a 2D line, just with an extra scaling factor. Solving for intersecting planes works the same way as for lines, set them equal to each other and do Gaussian Elimination.
+\paragraph{Normal Form} Converting a plane to normal form is also similar to that of a line. Given the scaleable vectors $\vec{v}$ and $\vec{w}$, we can find the normal $\vec{n}$ of the plane by taking the cross product, $\vec{v} \times \vec{w}$. Given $X = P + Vt + Ws$, we find the normal as \[n_1x_1 + n_2x_2 = N \cdot P\]
+\paragraph{Mirroring a Point} Sometimes, we want to mirror points on one side of a plane to the opposite side. Thinking of this theoretically, we want to find the smallest distance vector between our point $Q$ and our plane $X$, and move the point that distance on the opposite side. We need to first find the smallest distance from the plane to point. This can be done with the following formula. \[\mathbf{dist_Q} = \frac{d - (\vec{n} \cdot Q)}{\left\|\vec{n}\right\|} \cdot n\] Where 
+\begin{itemize}
+	\item $d$ is the constant in the normal form of the plane
+	\item $\vec{n}$ is the normal of the plane
+	\item $\vec{Q}$ is the point of interest
+\end{itemize}
+This will spit out a vector. Now, we can use this distance to find the $Q'$ point on the plane closest to the point of interest, and from there find the $Q''$ point that is the reflection of our point of interest.
+\begin{equation}
+\begin{split}
+\vec{Q'} & = \vec{Q} + \mathbf{dist_Q} \\
+\vec{Q''} & = \vec{Q} + 2 \times \mathbf{dist_Q} \\
+& = \vec{Q'} + \mathbf{dist_Q}
+\end{split}
+\end{equation}
+We can also reflect lines fairly simply. All we need to do is find the reflection of two points on the line and generate a new line from the new points. Simple and nice.
+\subsection{Basis and Orthogonality}
+\paragraph{Orthogonality} Vectors can have a property referred to as orthogonality. Vectors that are orthogonal are vectors that are at right angles to each other. For example, the vectors represent the x-axis and y-axis in Euclidean space are orthogonal. To test orthogonality of vectors, we just take the dot product $\vec{v} \cdot \vec{u}$ of the two vectors. If the dot product is "0", then the vectors are orthogonal. Furthermore, we can test orthogonality of lines and planes. We do this by obtaining their normals, and doing orthogonality checks on the normal vectors.
+\paragraph{Vector Space} Vector space can be thought of as the number of dimensions over a certain scalar field. For example, $GF(2)^{3}$ is the 3-dimensional vector space over GF(2). Movements across n-dimensions are movements in the vector space. There is also the notion of vector sub-spaces. These are spaces of the form $s \cdot \vec{v}$, which in our work so far, are lines in 2D and planes in 3D. The equation for a line/plane is the subspace of 2D/3D vector space.
+\paragraph{Linear Independence} We know how to generate subspace as lines and planes, referred to as generators. If we have generators that all point to different points in our subspace, then that's all good. But what happens if we have two generators that are scalar multiples of each other? Then we have redundant, or linearly dependent, generators. We want to be remove all redundant generators and bring our world back down to linearly independent generators. A set of linearly independent generators is referred to as a \textbf{basis}, and the number of elements in each generator is the \textbf{dimension} of the subspace. \newline
+We can check linear independence using, you guessed it, Gaussian Elimination. We place all our vectors together and reduce them all to row-echelon form. Any redundant vectors will end up with all 0's in its respective row. If we have a row-echelon matrix with no special cases, then we have linear independence.
 
 \section{Set Theory}
 This section covers the basics of Set Theory, with some examples.
-\subsection{Notes}
+\subsection{Notation}
+\paragraph{Set} A set is a collection of things. These things are called elements or members, and they follow the following ideas:
+\begin{enumerate}
+	\item Each member must be identifiable and distinguishable (aka unique)
+	\item There is clear criterion defined as to whether an element is part of a set
+	\item A member if a set is only counter once
+	\item There is no order in a set
+	\item Sets are only defined by its members. If two different sets have the same elements, as far as math if concerned, they are the same set.
+\end{enumerate}
+
+\paragraph{Set Notation} To indicate if a member $x$ is a part of a set $A$, we use the following notation. \[ x \in A\] Small, finite sets can be defined by listing out all its members; $\{Summer, Winter, Spring, Fall\}$, while infinite sets usually have a clear pattern; $\mathbb{N} = \{0, 1, 2, 3, ...\}$ We can also define subsets. A subset is a set whose elements are selected from another set. If we see $B$ as a subset of $A$, we note it as $B \subseteq A$. If we want to define $B$ with a condition, we do it as such: \[ B = \{ x \in A | x \text{ satisfies condition } c\}\] We can user formal logic, such as "there exists $\exists$" to help us define some conditions, as they can get pretty wild. Note: We can also have an empty set; an empty set is noted as $\emptyset$.
+\paragraph{Set Operations} We can also do operations between sets. These are fairly simple to understand. Assume we have sets $A \subseteq X$ and $B \subseteq X$. 
+\begin{enumerate}
+	\item Union - $A \cup B$: Returns the set whose members are in $A$ OR $B$
+	\item Intersection - $A \cap B$: Returns the set whose members are in both $A$ AND $B$
+	\item Complement - $\bar{A}$: Returns the set whose members are NOT in $A$.
+	\item Difference - $A \setminus B$: Returns the set whose members are IN $A$ and NOT IN $B$
+\end{enumerate}
+You can mix and match operations and create new ones, like the difference operation. It is equivalent to the operations $B \cap \bar{B}$.
+
+\subsection{Cardinality} 
+\paragraph{Cardinality} The cardinality of a set can be defined as the size, or amount of members in the set.
+\paragraph{Countable Sets}
+\paragraph{Proving Countable Sets}
+\paragraph{Uncountable Set}
+
+\subsection{Relations}
+\paragraph{Relation}
+\paragraph{Reflexivity}
+\paragraph{Symmetry}
+\paragraph{Transitivity}
+\paragraph{Types of Relations}
+order / equivalence
 \subsection{Examples}
 
 \section{Functions}

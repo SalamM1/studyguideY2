@@ -188,35 +188,92 @@ This section covers the basics of Set Theory, with some examples.
 You can mix and match operations and create new ones, like the difference operation. It is equivalent to the operations $B \cap \bar{B}$.
 
 \subsection{Cardinality} 
-\paragraph{Cardinality} The cardinality of a set can be defined as the size, or amount of members in the set.
-\paragraph{Countable Sets}
-\paragraph{Proving Countable Sets}
-\paragraph{Uncountable Set}
+\paragraph{Cardinality} The cardinality of a set can be defined as the size, or amount of members in the set. The set of seasons has a cardinality of 4, for example. Sounds simple, but when we talk about the cardinality of infinite sets it is harder to give a solid number. Ofcourse, you could say they have a cardinality of "infinite", but ya boi Georg Candor discovered not all infinite sets have the same cardinality. There are two types of infinite cardinalities we concern ourselves with; countable and uncountable.
+\paragraph{Countable Sets} $\mathbb{N}$ is the set of natural numbers from 0 to infinite and beyond. It is important to us because the definition of a countable set is one that has the same cardinality as the set $\mathbb{N}$. We do this by creating a sort of mapping between the set of natural numbers and whatever infinite set we are comparing. This can be seen for the set of integers $\mathbb{Z}$, by mapping each numbers negative then positive to the next position in the natural numbers, you can create a clear mapping between the two. How you create this mapping is dependent on the set you are trying to solve the cardinality for. For example, for the set of squared natural numbers $\mathbb{N^2}$, it maps in a breadth-first search style, as seen in the figure, since two natural numbers can be converted into a tuple.
+
+\paragraph{Uncountable Set} Not all sets can be proved to be countable. A very commonly used set that is uncountable is the set of real numbers. Disproving the countability of a set is also dependent on the set you are trying to prove, but usually you want to find a mapping between each member of the natural numbers and prove that there is no such mapping. For example, in the real numbers, the values post-decimal are infinite, and each position post-decimal can be matched to a member in $\mathbb{N}$, but there are infinite number of such mappings. This means that the overall set of real numbers is uncountable. This is important to know when discussing the computability of programs, such as knowing that, because there are countabely many Java programs but uncountably many real numbers, there are some real numbers we cannot compute.
+\begin{figure}[!htb]
+	\center{\includegraphics[width=8cm]
+		{maths/countable}}
+	\caption{\label{fig:zcount} N and Z}
+\end{figure}
+\begin{figure}[!htb]
+	\center{\includegraphics[width=8cm]
+		{maths/n2map}}
+	\caption{\label{fig:qcount} N and N$^2$}
+\end{figure}
 
 \subsection{Relations}
-\paragraph{Relation}
-\paragraph{Reflexivity}
-\paragraph{Symmetry}
-\paragraph{Transitivity}
-\paragraph{Types of Relations}
-order / equivalence
-\subsection{Examples}
+A relation between two sets is a collection of ordered pairs containing one object from each set. If $x \in A$ $y \in B$, then the objects are said to be related if the ordered pair $\left(x,y \right) \in A \times B$ is in the relation.
+\paragraph{Relation} Relations are not anything new to us. We have used them in Databases, as SQL is a language focused on relations. Mathematical relations follow the same principle as general relations, but there's some terms we need to speak about.
+\paragraph{Reflexivity} We call a binary relation $R \subseteq A \times A$ \textbf{reflexive} if it contains all pairs (x,x) for an element x of A. Let's think of this in a node based graph, where the tuple (a,b) is the connection between a and b. A reflexive set would have all possible tuples where a=b. For example, in the set $A = \left\lbrace a, b, c\right\rbrace$, then it is reflexive if the relations (a,a), (b,b) and (c,c) $\in R$.
+If our relation isn't reflexive and we want to make it reflexive, we apply to it what we call \textbf{reflexive-closure}, which returns the smallest set that contains R and is reflexive.
+\begin{figure}[!htb]
+\center{\includegraphics[width=8cm]
+	{maths/reflexive}}
+\caption{\label{fig:reflexive} Reflexive Nodes}
+\end{figure}
+\paragraph{Symmetry} We call a binary relation $R \subseteq A \times A$ \textbf{symmetric} if with every pair $\left(x,y \right) \in R$ there is also $\left(y,x \right) \in R$. In the example of path notes, it would mean for every path from a to b (a,b), we have a path leading the other way from b to a (b,a). As with reflexivity, we also have symmetric closure, which is the smallest set that includes R and is symmetric. A neat way to do this is to define an inverse relation by taking all members of $R$ and flipping (x,y) to (y,x). We can then do the set operation union on $R$ and our inverse set $R^{-1}$ and we get the symmetric closure of R.
+\begin{figure}[!htb]
+	\center{\includegraphics[width=8cm]
+		{maths/symmetric}}
+	\caption{\label{fig:symmetric} Symmetric Nodes}
+\end{figure}
+\paragraph{Transitivity} A binary relation $R \subseteq A \times A$ is \textbf{transitive} if whenever $\left(x,y \right) \in R$ and $\left(y,z \right) \in R$ then also $\left(x,z \right) \in R$. Thinking back to the nodes example once more, if we have a path from a to b, and a path from b to c, then there is a direct path from a to c. There is also transitive closure, but it's much more complicated than the previous two.
+The trans-closure operation happens more than once, because once new tuples/routes are made, we will have new transitive connections. This operation can repeat forever. It is actually impossible to define transitive closure with the usual means of first order logic. Languages like SQL that are based on first-order logic also don't define transitive closure. Nonetheless, for small enough sets, it should be simple to do by hand.
+
+\paragraph{Types of Relations} We have two packages or properties that we covered in the course. There are \textbf{order relations} and \textbf{equivalence relations}.
+\begin{enumerate}
+	\item Order Relation: a relation that is reflexive, anti-symmetric and transitive.
+	\item Equivalence Relation: a relation that is reflexive, symmetric and transitive.
+\end{enumerate}
+As we see here, the only difference the two is that one is symmetric, the other is anti-symmetric. Equivalence relations give rise to the concept of classes for items that are loosely equal. For example, the set of rational numbers can give way to some equivalence relations such as (6,10) and (2,3). They both represent the same number and are therefore deemed to be the same class.
 
 \section{Functions}
 Expanding from Set Theory, this section deals with Functions and our new understanding of them.
-\subsection{Notes}
-\subsection{Examples}
+\subsection{Function Definition} For a binary relation $R \subseteq A \times A$ to qualify as a function, two conditions must be met.
+\begin{enumerate}
+	\item Definedness: For EVERY $a \in A$ there must exist a pair (a,b).
+	\item Single Valuedness: For ALL $a \in A$, there is ONLY ONE $b \in B$ such that (a,b) belongs to R.
+\end{enumerate}
+Relations that satisfy these conditions are called functional relations. Lets clear up some definitions.
+\begin{itemize}
+	\item If $R \subseteq A \times B$ then A is the \textbf{Domain}.
+	\item B is the \textbf{Co-domain}.
+	\item The \textbf{Range} is the set of all values in $B$ that are also in $R$. Written as the \textbf{image} of $f$.
+\end{itemize}
 
+\paragraph{Properties of Functions} We have three special properties that can apply to a function. 
+\begin{enumerate}
+	\item Injectivity: A function that will give a different output for each input is injective. Meaning that each element that is in $B$ and in a tuple in $R$, it only appears once.
+	\item Surjectivity: A function whose range and co-domain are equal.
+	\item Bijectivity: A function that is both injective and surjective is referred to as bijective.
+\end{enumerate}
+
+\subsection{Structural Induction}
+\paragraph{Defining Syntax} So far, we have created subsets and relations by selection, the thing with the first order logic. This has worked fine for us so far, but problems arise when we want to do stuff like define syntax, or grammar of sorts. For example, the famous set of well balanced brackets. How can we define a set of all strings containing properly nested brackets? We need to define it inductively, using a set of rules.
+\begin{enumerate}
+	\item The string "[]" $\in A$
+	\item If $s \in A$, then "[s]" $\in A$
+	\item If $s$ and $t$ are strings that belong to $B$, then $st \in A$
+\end{enumerate}
+We can use these rules to generate a string like "[][[]]" in steps. We start with Rule 1, and apply rule 2 to it, then apply rule 3 to it with t = "[]", and we have confirmed "[] [[]]" is in the set. This is what we call an inductive function. The base rule, in this case Rule 1, is referred to as the \textbf{base case}. The other rules are referred to as the \textbf{inductive steps}.
+
+\subsection{Structural Induction} To prove properties of an inductive function, we use a process called structural induction. In structural induction, you first assume it works for the base case, and then prove it for each step. This is best with an example. Show that $11^n - 6$ is always divisible by 5 for all n.
+\begin{itemize}
+	\item Base Case: n = 0
+	\item Inductive Hypothesis: Assume $11^n - 6$ is divisible by 5.
+	\item Inductive Step: \[ 
+	\begin{split}
+	11^{n+1} - 6 &= 11^n \times 11 - 6 \\
+	&=11^n \times 11 - 66 + 60 \\
+	&=11^n \times 11 - (6 \times 11) + 60 \\
+	&=11(11^n \times 11 - 6) + 60 \\
+	\end{split}\]
+\end{itemize}
+There are now two terms we need to test for divisibility by 5; $60$ and $11^n - 6$. The first one is obvious. With our hypothesis, we know the second one has to be divisible. Therefore, the inductive rule is valid, and we have proved out induction function.
 \section{Probability}
 Continuing from Year 1 AI, probability.
-\subsection{Notes}
-\subsection{Examples}
-
-\section{Random Variables}
-This section deals with the handling of both discrete and continuous random variables. Don't go gambling after you cover this section.
-\subsection{Discrete}
-\subsection{Continuous}
-\subsection{Examples}
 
 \section{Equations}
 Appending-like area to store all equations that will likely be used in the exam.

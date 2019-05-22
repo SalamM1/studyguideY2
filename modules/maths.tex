@@ -274,6 +274,41 @@ We can use these rules to generate a string like "[][[]]" in steps. We start wit
 There are now two terms we need to test for divisibility by 5; $60$ and $11^n - 6$. The first one is obvious. With our hypothesis, we know the second one has to be divisible. Therefore, the inductive rule is valid, and we have proved out induction function.
 \section{Probability}
 Continuing from Year 1 AI, probability.
-
+\subsection{Definitions}
+\begin{itemize}
+	\item Sample Space: The range of values of a random variable.
+	\item Event: Subset of the sample space; the set of all possible events is the powerset of the sample space. 
+	\item Elementary Event: An event with a single outcome.
+	\item Probability: A number in the interval [0, 1] that defines the likelihood of an event within a sample space.
+\end{itemize}
+And here are some common equations and definitions with probabilities.
+\begin{itemize}
+	\item The probability of an event is a real number greater than 0.
+	\item The probably of the sample space is 1.
+	\item If $A$ and $B$ are disjoing events, then their union is equivalent to their sum. $p(E \cup F) = p(E) + p(F)$
+	\item The complement of the event $A$ is equal to $p(\bar{A} = 1 - p(E))$.
+	\item The union of possibly overlapping is different. $p(A \cup B) = p(A) + p(B) - P(A \cap B)$
+	\item Independent Experiments: The outcome of the second experiment has nothing to do with the first. $p(A\times B) = p(A) \times p(B)$
+	\item Total Correlation: The outcome of the second experiment is determined fully by the outcome of the first, usually determined by a function $f: S \rightarrow T$, the probability. $p(A\times B) = p(A \cap f^{-1}[B])$
+	\item Partly Dependent: Much like sampling experiments (4 balls in a bag, 2 black, 2 white, what is the probability the 2nd is white if the first is black?) Best to use decision trees here.
+\end{itemize}
+\paragraph{Conditional Probability} The conditional probability that $B$ happens given $A$ is written in the form \[p(B|A) = \frac{p(A \cap B)}{p(A)}\]. From this equation, and the fact $p(A \cap B) == p(B \cap A)$, we can derive a formula known as Bayes' Theorem. \[ p(A|B) =\frac{p(A)^*p(B|A)}{p(B)} \] Read as "the probability A occurs given B is true". This formula can also be rewritten as \[ p(A|B) =\frac{p(A)^*p(B|A)}{p(A)^*p(B|A) + p(\bar{A})^*p(B|\bar{A})}\]
+\subsection{Discrete Random Variables} 
+\paragraph{Random Variables}There is only so much we can do with general sample spaces. So what mathematicians did to make everyone's life harder and more interesting is to map the members of a sample space to real numbers, $\mathbb{R}$. For example, the outcome of ten coin flips has the sample space of 1024 sequences. What we can do instead is point out the number of "heads" in sequence, so the range of the random variable reduces to just 10 members. With numbers now assigned for our events and outcomes, we can start talking about expected values.
+\paragraph{Expected Value} The expected value for a random variable $X$ with at most countably many values is the weighted average of all values that X can take: \[ EV(X) = \sum_{i}x_i \times p(x_i) \] For example, a fair 6-sided die would have an expected value of 3.5 ($\frac{1}{6} \times \sum_i^6 i$).
+\paragraph{Standard Deviation} It would also be useful to know how much our expected value differs, a sort of range it is expected to be in, because something like 3.5 is not exactly possible from a die. We do this using standard deviation. After calculating EV(X), we can plug it into the variance equation. \[Var(X) = \sum_{i} (x_i - E(X))^2 \times p(x_i)\] and from the variance, we simply take its positive square root to obtain standard deviation. \[SD(X) = \sqrt{Var(X)}\]
+\paragraph{Some ol' Classics} Here are some common discrete random variables with some equations.
+\begin{itemize}
+	\item Bernoulli: Based on the random process wit two outcomes, a and b. $p(a) = q$ and $p(b) = 1 - q$.
+	\item Binomial: This is based on using $n$ independent copies of the process and associates each with $2^n$ many outcomes the number of times the outcome $a$ occurred. The probability of the random variable is then $p(X) = (n i) \times p^iq^{n-i}$
+	\item Geometric: This is Bernoulli until we obtain an outcome of a, and not just one probability. $p(X) = q^{i-1}p$
+	\item Poisson: The outcomes are the natural numbers $\mathbb{N}$ where the probability of each number i is \[ p(X) = \frac{\lambda^i}{i!} \times e^{-\lambda}\] where lambda is a parameter that can be chosen according to the situation we are modeling. $\lambda$ is also the expected value and variance, so $SD(X) = \sqrt{\lambda}$.
+\end{itemize}
+\subsection{Continuous Random Variables}
+\paragraph{Normal Distribution} Continuous random variables are random variables whose range contains no negative numbers and for which the integral from negative infinite to infinite is equal to 1. Given a random variable, it's probability/outcome is determined by an integral in the function; this is referred to as a density function. One of the most common continuous random variables is the normal distribution, the "bell curve" we all know and love. Normal distributions are actually determined by two factors, the expected value $\mu$ and the standard deviation $\sigma$ as $N(\mu, \sigma)$: 
+\[
+\frac{1}{\sqrt{2\pi}}\times \frac{1}{\sigma} \times e^{-\frac{(x-\mu)^2}{2\sigma^2}}\] 
+For which the standard normal distribution, or Gaussian Distribution, is $N(0,1)$. To find expected value, we do an infinite integral of $x f(x) dx$, and similar for variance, where it is the infinite integral of $(x - EV(X))^2f(x)dx$, and standard deviation is not any different.
+\paragraph{Central Limit Theorem} 
 \section{Equations}
 Appending-like area to store all equations that will likely be used in the exam.
